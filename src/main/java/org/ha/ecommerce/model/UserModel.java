@@ -1,11 +1,14 @@
 package org.ha.ecommerce.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
 @Document("users")
 public class UserModel {
+    @MongoId
+    private String id;
     private String email;
     private String country;
     private String firstName;
@@ -24,7 +27,7 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(Date resetPasswordExpiresAt, String resetPasswordToken, Date verificationTokenExpiresAt, String verificationToken, Date lastLogin, String role, Boolean isVerified, String password, String userName, String lastName, String firstName, String country, String email) {
+    public UserModel(Date resetPasswordExpiresAt, String resetPasswordToken, Date verificationTokenExpiresAt, String verificationToken, Date lastLogin, String role, Boolean isVerified, String password, String userName, String lastName, String firstName, String country, String email, String id) {
         this.resetPasswordExpiresAt = resetPasswordExpiresAt;
         this.resetPasswordToken = resetPasswordToken;
         this.verificationTokenExpiresAt = verificationTokenExpiresAt;
@@ -38,9 +41,14 @@ public class UserModel {
         this.firstName = firstName;
         this.country = country;
         this.email = email;
+        this.id = id;
     }
 
     //    Getter
+    public String getId() {
+        return id;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -94,6 +102,10 @@ public class UserModel {
     }
 
     //  Setter
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
