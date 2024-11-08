@@ -17,6 +17,10 @@ public class UserService {
         return userRepository.getUserByEmailIgnoreCase(email);
     }
 
+    public UserModel getUserByUsername(String username) {
+        return userRepository.getUserByUsername(username);
+    }
+
     public Optional<UserModel> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }

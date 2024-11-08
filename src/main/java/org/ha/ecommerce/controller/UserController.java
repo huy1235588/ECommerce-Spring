@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.ha.ecommerce.jwt.JwtTokenUtil;
 import org.ha.ecommerce.model.UserModel;
 import org.ha.ecommerce.repository.UserRepository;
+import org.ha.ecommerce.request.SignInRequest;
 import org.ha.ecommerce.request.SignUpRequest;
 import org.ha.ecommerce.response.ApiResponse;
 import org.ha.ecommerce.service.UserService;
@@ -34,6 +35,34 @@ public class UserController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    //  Check UserName
+    @GetMapping("/check-username")
+    public ResponseEntity<ApiResponse> CheckUserName(@RequestBody String userName) {
+        try {
+            UserModel userNameExists = userService.getUserByUsername(userName);
+
+            if (userNameExists != null) {
+                return ResponseEntity.status(201).body(new ApiResponse(
+                        false,
+                        "UserName already exists",
+                        null
+                ));
+            }
+
+            return ResponseEntity.ok(new ApiResponse(
+                    true,
+                    "",
+                    null
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(new ApiResponse(
+                    false,
+                    e.getMessage(),
+                    null
+            ));
+        }
+    }
 
     //  Sign up
     @PostMapping("/signup")
@@ -103,13 +132,10 @@ public class UserController {
 
     //  Login
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody Map<String, String> body, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse> login(@RequestBody SignInRequest signinRequest, HttpServletResponse response) {
         try {
-            String email = body.get("email");
-            String password = body.get("password");
-
             // Find user by email
-            UserModel user = userService.getUserByEmailIgnoreCase(email);
+            UserModel user = userService.getUserByEmailIgnoreCase(signinRequest.getEmail());
             if (user == null) {
                 return ResponseEntity.status(404).body(new ApiResponse(
                         false,
@@ -119,7 +145,7 @@ public class UserController {
             }
 
             // Compare passwords
-            boolean isPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
+            boolean isPasswordMatch = bCryptPasswordEncoder.matches(signinRequest.getPassword(), user.getPassword());
             if (!isPasswordMatch) {
                 return ResponseEntity.status(401).body(new ApiResponse(
                         false,

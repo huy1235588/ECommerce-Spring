@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<UserModel, String> {
     UserModel getUserByEmailIgnoreCase(String regex);
+    UserModel getUserByUsername(String username);
 
     Optional<UserModel> findByEmail(String email);
 
